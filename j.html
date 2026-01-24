@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Eternal Love ❤️</title>
+    <!-- Luxury Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Montserrat:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rose: #ff4d6d;
+            --gold: #d4af37;
+            --cream: #fff5f6;
+            --dark: #1a0a0d;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Standardize Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+        ::-webkit-scrollbar-thumb { background: var(--rose); border-radius: 10px; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #1a0a0d;
+            background: linear-gradient(135deg, #1a0a0d 0%, #4a0e1c 100%);
+            color: var(--cream);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto; 
+            padding: 10px;
+        }
+
+        /* Fireworks Canvas (Only for Slide 2) */
+        #fireworksCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            display: none;
+        }
+
+        /* PETAL ANIMATION LAYER */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; /* Above background, below content */
+            pointer-events: none;
+        }
+
+        .petal {
+            position: absolute;
+            background: #ff4d6d;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.6;
+            filter: drop-shadow(0 0 5px rgba(255, 77, 109, 0.3));
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Glass Container */
+        .container {
+            width: 100%;
+            max-width: 1250px; 
+            height: 90vh; 
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 35px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow-y: auto; 
+            z-index: 10; /* Above petals */
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            display: block; 
+        }
+
+        .page { display: none; width: 100%; }
+
+        .active { 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            min-height: 100%; padding-top: 10px; padding-bottom: 50px; animation: fadeIn 0.8s ease; 
+        }
+
+        #page1.active, #pageFinal.active, #pageProposeDay.popup-active {
+            justify-content: center; padding-top: 0;
+        }
+
+        .popup-active { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            min-height: 100%; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+        }
+
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.4); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 6vw, 4rem); color: var(--rose); margin-bottom: 1.5rem; }
+        .romantic-text { font-size: 1.2rem; font-weight: 300; line-height: 1.7; max-width: 750px; margin-bottom: 4rem; }
+
+        .main-gif {
+            width: 300px; height: 300px; border-radius: 40px; margin-bottom: 2rem;
+            object-fit: cover; box-shadow: 0 15px 35px rgba(0,0,0,0.3); flex-shrink: 0;
+        }
+
+        .m{
+            width: 600px; height: 350px; border-radius: 40px; margin-bottom: 2rem;
+            object-fit: cover; box-shadow: 0 15px 35px rgba(0,0,0,0.3); flex-shrink: 0;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-wrap {
+            display: flex; justify-content: center; align-items: center; gap: 2.5rem;
+            min-height: 140px; position: relative; width: 100%;
+        }
+
+        .btn {
+            padding: 18px 50px; border-radius: 100px; border: none; font-size: 1.1rem;
+            font-weight: 600; cursor: pointer; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        #yesBtn { background: #4caf50; color: white; z-index: 100; position: relative; }
+        #noBtn { background: var(--rose); color: white; z-index: 10; }
+
+        /* --- DASHBOARD --- */
+        .selection-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; margin-top: 20px;
+        }
+
+        .col-card {
+            background: rgba(255, 255, 255, 0.05); padding: 50px 20px; border-radius: 35px;
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.4s;
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+
+        .col-card:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-10px); border-color: var(--rose); }
+        .icon-box { font-size: 3.5rem; color: var(--rose); }
+
+        /* --- GALLERY: 16:9 & HOVER --- */
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; padding: 20px 0 50px 0;
+        }
+
+        .polaroid {
+            background: white; padding: 15px 15px 35px 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            transform: rotate(var(--r)); transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .polaroid:hover { transform: rotate(0deg) scale(1.05); z-index: 25; box-shadow: 0 20px 50px rgba(255, 77, 109, 0.3); }
+
+        .polaroid img { 
+            width: 100%; aspect-ratio: 16 / 9; object-fit: cover; margin-bottom: 15px; border: 1px solid #f0f0f0;
+        }
+
+        .photo-caption { font-family: 'Great Vibes', cursive; color: #222; font-size: 1.8rem; }
+
+        /* --- VIDEO --- */
+        .video-box {
+            width: 100%; max-width: 1000px; aspect-ratio: 16 / 9; border-radius: 25px;
+            border: 3px solid var(--rose); background: #000;
+        }
+
+        .letter-paper {
+            background: #fff; color: #222; padding: 50px; border-radius: 5px;
+            font-family: 'Great Vibes', cursive; font-size: 2.2rem; text-align: left;
+            max-width: 700px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .nav-btn {
+            margin-top: 30px; background: var(--rose); color: white; padding: 18px 50px;
+            border-radius: 100px; border: none; cursor: pointer; text-transform: uppercase; font-weight: 600;
+        }
+
+        .heart-burst {
+            position: fixed; top: 50%; left: 50%; width: 0; height: 0; background: var(--rose);
+            border-radius: 50%; transform: translate(-50%, -50%); z-index: 9999; pointer-events: none; display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .selection-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .container { height: 92vh; padding: 30px 20px; }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid { grid-template-columns: 1fr; }
+            .polaroid { transform: rotate(0deg) !important; padding-bottom: 25px; }
+            .photo-caption { font-size: 1.5rem; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Petal Layer -->
+    <div class="bg-animation" id="bgAnim"></div>
+    
+    <canvas id="fireworksCanvas"></canvas>
+    <div class="heart-burst" id="burst"></div>
+
+    <div class="container">
+        
+        <!-- PAGE 1: PROPOSAL -->
+        <div id="page1" class="page active">
+            <img id="mainGif" class="main-gif" src="https://i.pinimg.com/originals/f1/c8/c3/f1c8c3c353b452d9c55dbf705cdbc41d.gif">
+            <h1>Will you be mine?</h1>
+            <p class="romantic-text">Life is an incredible journey, and I want to spend every moment of it with you.</p>
+            <div class="btn-wrap">
+                <button class="btn" id="yesBtn" onclick="openProposeDay()">YES</button>
+                <button class="btn" id="noBtn" onclick="handleNo()">No</button>
+            </div>
+        </div>
+
+        <!-- PAGE 2: HAPPY PROPOSE DAY (Petals stop here automatically) -->
+        <div id="pageProposeDay" class="page">
+            <img class="main-gif" src="https://i.pinimg.com/originals/0c/86/c2/0c86c2f0c9e8203d5b51708bd7c4d5d4.gif">
+            <h1 style="color: var(--gold);">Happy Propose Day! 💍</h1>
+            <p class="romantic-text">
+                Every second with you is a celebration. You are the spark that makes my world so much brighter!
+            </p>
+            <button class="nav-btn" onclick="nextPage('pageCards')">See My Gifts →</button>
+        </div>
+
+        <!-- PAGE 3: DASHBOARD -->
+        <div id="pageCards" class="page">
+            <h1>Something for You</h1>
+            <div class="selection-grid">
+                <div class="col-card" onclick="nextPage('pageGallery')">
+                    <div class="icon-box">📸</div>
+                    <h3>Our Gallery</h3>
+                    <p>6 cinematic memories</p>
+                </div>
+                <div class="col-card" onclick="nextPage('pageLetter')">
+                    <div class="icon-box">💌</div>
+                    <h3>My Heart</h3>
+                    <p>A letter for you</p>
+                </div>
+                <div class="col-card" onclick="nextPage('pageVideo')">
+                    <div class="icon-box">🎥</div>
+                    <h3>Our Story</h3>
+                    <p>Watch this surprise</p>
+                </div>
+            </div>
+            <button class="nav-btn" style="background:none; border:1px solid var(--rose); color:var(--rose);" onclick="triggerFinalTransition()">Finally... ✨</button>
+        </div>
+
+        <!-- PAGE: GALLERY -->
+        <div id="pageGallery" class="page">
+            <h1>Memories</h1>
+            <div class="gallery-grid">
+                <div class="polaroid" style="--r:-3deg"><img src="https://i.pinimg.com/736x/01/38/c8/0138c8514220a5e900d08508dbbe99ae.jpg"><p class="photo-caption">Sweet Hello</p></div>
+                <div class="polaroid" style="--r:2deg"><img src="https://i.pinimg.com/1200x/9b/96/4c/9b964cf3b7e7fc33487341499bd3f96f.jpg"><p class="photo-caption">True Smile</p></div>
+                <div class="polaroid" style="--r:-4deg"><img src="https://i.pinimg.com/736x/fb/48/c6/fb48c6ca28b697f133c3063a294e4807.jpg"><p class="photo-caption">Perfect Day</p></div>
+                <div class="polaroid" style="--r:3deg"><img src="https://i.pinimg.com/736x/9a/fa/c4/9afac4cc3949256a10a49bdbeca0822b.jpg"><p class="photo-caption">Only Us</p></div>
+                <div class="polaroid" style="--r:-2deg"><img src="https://i.pinimg.com/736x/06/2a/59/062a592d988ef44d9dd7fca10b063080.jpg"><p class="photo-caption">My Home</p></div>
+                <div class="polaroid" style="--r:4deg"><img src="https://i.pinimg.com/736x/53/74/89/537489d07f4381e6d353656e017e794e.jpg"><p class="photo-caption">Forever Us</p></div>
+            </div>
+            <button class="nav-btn" onclick="nextPage('pageCards')">← Back</button>
+        </div>
+
+        <!-- PAGE: LETTER -->
+        <div id="pageLetter" class="page">
+            <h1>My Heart to Yours</h1>
+            <div class="letter-paper">
+                My Dearest,<br><br>
+                Thank you for being my person. I want to hold your hand through every season of life. You are my home.<br><br>
+                Forever yours. ❤️
+            </div>
+            <button class="nav-btn" onclick="nextPage('pageCards')">← Back</button>
+        </div>
+
+        <!-- PAGE: VIDEO -->
+        <div id="pageVideo" class="page">
+            <h1>Just for You</h1>
+            <video class="video-box" controls><source src="love1.mp4" type="video/mp4"></video>
+            <button class="nav-btn" onclick="nextPage('pageCards')">← Back</button>
+        </div>
+
+        <!-- PAGE: FINAL -->
+        <div id="pageFinal" class="page">
+            <img class="m" src="https://i.pinimg.com/originals/55/2c/27/552c27eea224d4a5a37fa204a75631ef.gif">
+            <h1>Forever to Go!</h1>
+            <p class="romantic-text">From the moment you came into my life, everything felt brighter 🌸💫 You are my peace, my happiness, and my home 💖 With you, love feels effortless and endless 💕 I promise loyalty, laughter, and care through every moment 💍❤️ Together always, heart to heart, with forever to go 💑✨❤️</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- GLOBAL STATE ---
+        let currentActivePage = 'page1';
+
+        // --- PETAL SYSTEM ---
+        function createPetal() {
+            // IF we are on Propose Day, stop making new petals
+            if (currentActivePage === 'pageProposeDay') return;
+
+            const bg = document.getElementById('bgAnim');
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            
+            // Randomize appearance
+            const startX = Math.random() * 100;
+            const size = Math.random() * 15 + 10;
+            const duration = Math.random() * 4 + 4;
+
+            petal.style.left = startX + 'vw';
+            petal.style.width = size + 'px';
+            petal.style.height = size + 'px';
+            petal.style.animationDuration = duration + 's';
+
+            bg.appendChild(petal);
+
+            // Clean up
+            setTimeout(() => petal.remove(), duration * 1000);
+        }
+
+        // Generate petals continuously
+        setInterval(createPetal, 300);
+
+        // --- BUTTON LOGIC ---
+        let noClicks = 0;
+        const gifs = [
+            "https://i.pinimg.com/originals/f1/c8/c3/f1c8c3c353b452d9c55dbf705cdbc41d.gif",
+            "https://i.pinimg.com/originals/6e/58/e9/6e58e9f3324d96ef6b1894caddd6fe19.gif",
+            "https://i.pinimg.com/originals/f7/df/ce/f7dfceb07640065e8a854d69e12f7d51.gif",
+            "https://media.tenor.com/dhuQV_msfiUAAAAM/cat-gun.gif",
+            "https://media.tenor.com/0v8Y1C_f-p0AAAAi/love-mocha.gif"
+        ];
+
+        function handleNo() {
+            noClicks++;
+            const yesBtn = document.getElementById('yesBtn');
+            const gif = document.getElementById('mainGif');
+            const noBtn = document.getElementById('noBtn');
+
+            if(noClicks < gifs.length) gif.src = gifs[noClicks];
+
+            const stages = [1.6, 2.8, 5, 45]; 
+            if(noClicks <= 4) yesBtn.style.transform = `scale(${stages[noClicks-1]})`;
+
+            if(noClicks >= 4) {
+                noBtn.style.opacity = "0";
+                noBtn.style.pointerEvents = "none";
+            }
+        }
+
+        // --- FIREWORKS SYSTEM ---
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.vel = { x: (Math.random() - 0.5) * 8, y: (Math.random() - 0.5) * 8 };
+                this.alpha = 1;
+            }
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color; ctx.fill();
+            }
+            update() { this.x += this.vel.x; this.y += this.vel.y; this.alpha -= 0.01; }
+        }
+
+        function animateFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            particles.forEach((p, i) => {
+                if (p.alpha <= 0) particles.splice(i, 1);
+                else { p.update(); p.draw(); }
+            });
+            if (Math.random() < 0.06) {
+                const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height * 0.4;
+                for (let i = 0; i < 35; i++) particles.push(new Particle(x, y, color));
+            }
+            requestAnimationFrame(animateFireworks);
+        }
+
+        // --- NAVIGATION ---
+        function nextPage(id) {
+            currentActivePage = id; // Update global state
+            const allPages = document.querySelectorAll('.page');
+            allPages.forEach(p => p.classList.remove('active', 'popup-active'));
+            
+            const target = document.getElementById(id);
+            if(id === 'pageProposeDay') {
+                target.classList.add('popup-active');
+                canvas.style.display = 'block';
+            } else {
+                target.classList.add('active');
+                canvas.style.display = 'none';
+            }
+            
+            document.querySelector('.container').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openProposeDay() {
+            nextPage('pageProposeDay');
+            animateFireworks();
+        }
+
+        function triggerFinalTransition() {
+            const burst = document.getElementById('burst');
+            burst.style.display = 'block';
+            burst.animate([{ width: '0', height: '0', opacity: 1 }, { width: '300vw', height: '300vw', opacity: 1 }], 
+                { duration: 1000, easing: 'ease-in-out', fill: 'forwards' });
+
+            setTimeout(() => {
+                nextPage('pageFinal');
+                burst.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1000, fill: 'forwards' });
+                setTimeout(() => burst.style.display = 'none', 1000);
+            }, 900);
+        }
+    </script>
+</body>
+</html>
